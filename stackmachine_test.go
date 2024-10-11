@@ -14,6 +14,49 @@ func TestStartsWithEmptyStack(t *testing.T) {
 }
 
 // Write your own TDD tests here as you develop
+func TestHasNumberOutOfBounds(t *testing.T) {
+	commands := []string{
+		"50001",
+		"-34",
+	}
+
+	for _, command := range commands {
+		_, err := StackMachine(command)
+
+		if err == nil {
+			t.Error("expected error for integer out of bounds")
+		}
+	}
+}
+
+func TestCommandAdd(t *testing.T) {
+	commands := []string{
+		"+",
+	}
+
+	for _, command := range commands {
+		_, err := StackMachine(command)
+
+		if err == nil {
+			t.Error("expected error for add operation")
+		}
+	}
+}
+
+func TestCommandReturnsExpectedOutput(t *testing.T) {
+	commands := []string{
+		"501",
+	}
+
+	for _, command := range commands {
+		got, _ := StackMachine(command)
+
+		expected := 501
+		if got != expected {
+			t.Errorf("expected %d, but got %d", expected, got)
+		}
+	}
+}
 
 /*
 All these tests must pass for completion

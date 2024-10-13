@@ -32,6 +32,10 @@ func StackMachine(commands string) (int, error) {
 		}
 	}
 
+	if machine.isStackEmpty() {
+		return 0, nil
+	}
+
 	firstNumInStack := machine.stack[0]
 	return firstNumInStack, nil
 }
@@ -50,23 +54,33 @@ func processCommand(command string, m *Machine) error {
 		}
 		m.processDUPOperation()
 
+	case "CLEAR":
+		stackLength := len(m.stack)
+		m.removeElementsFromStack(stackLength)
+
+	case "SUM":
+		if m.isStackEmpty() {
+			return errors.New("cannot SUM on empty stack")
+		}
+		return m.processSUMOperation()
+
 	case "+":
 		if m.notEnoughNumsInStack(MIN_ELEMENTS_FOR_DOUBLE_OPS) {
 			return errors.New("not enough numbers in stack for add")
 		}
-		m.processAddOperation()
+		return m.processAddOperation()
 
 	case "-":
 		if m.notEnoughNumsInStack(MIN_ELEMENTS_FOR_DOUBLE_OPS) {
 			return errors.New("not enough numbers in stack for minus")
 		}
-		m.processMinusOperation()
+		return m.processMinusOperation()
 
 	case "*":
 		if m.notEnoughNumsInStack(MIN_ELEMENTS_FOR_DOUBLE_OPS) {
 			return errors.New("not enough numbers in stack for multiply")
 		}
-		m.processMultiplyOperation()
+		return m.processMultiplyOperation()
 
 	default:
 		num, _ := strconv.Atoi(command)
@@ -87,6 +101,13 @@ func processCommand(command string, m *Machine) error {
 
 func isNumberOutOfBounds(num int) bool {
 	return num < 0 || num > MAX_NUMBER_LIMIT
+}
+
+func (m *Machine) isStackEmpty() bool {
+	if len(m.stack) == 0 {
+		return true
+	}
+	return false
 }
 
 func (m *Machine) notEnoughNumsInStack(minimum int) bool {
@@ -138,6 +159,20 @@ func (m *Machine) processMultiplyOperation() error {
 	}
 
 	m.cleanupAfterDoubleOps(result)
+	return nil
+}
+
+func (m *Machine) processSUMOperation() error {
+	var sumTotal int
+	for _, num := range m.stack {
+		sumTotal += num
+		if isNumberOutOfBounds(sumTotal) {
+			return errors.New("stack integer sum overflow")
+		}
+	}
+
+	m.removeElementsFromStack(len(m.stack))
+	m.appendToStack(sumTotal)
 	return nil
 }
 

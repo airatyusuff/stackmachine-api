@@ -104,6 +104,36 @@ func TestInvalidCommandsForMultiply(t *testing.T) {
 	}
 }
 
+func TestClearCommandError(t *testing.T) {
+	commands := []string{
+		"12 CLEAR",
+		"12 23 CLEAR",
+	}
+
+	for _, command := range commands {
+		got, _ := StackMachine(command)
+
+		if got != 0 {
+			t.Errorf("expected %d, got %d", 0, got)
+		}
+	}
+}
+
+func TestSumCommandError(t *testing.T) {
+	commands := []string{
+		"SUM",
+		"50000 45 SUM",
+	}
+
+	for _, command := range commands {
+		got, err := StackMachine(command)
+
+		if err == nil {
+			t.Errorf("expected error for SUM operation got %d", got)
+		}
+	}
+}
+
 func TestCommandReturnsExpectedOutput(t *testing.T) {
 	commands := []string{
 		"501",

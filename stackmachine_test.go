@@ -14,6 +14,20 @@ func TestStartsWithEmptyStack(t *testing.T) {
 }
 
 // Write your own TDD tests here as you develop
+func TestCommandNotValid(t *testing.T) {
+	commands := []string{
+		"12+",
+		"INVALID",
+	}
+
+	for _, command := range commands {
+		_, err := StackMachine(command)
+
+		if err == nil {
+			t.Error("expected error for invalid commands")
+		}
+	}
+}
 func TestHasNumberOutOfBounds(t *testing.T) {
 	commands := []string{
 		"50001",

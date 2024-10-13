@@ -6,6 +6,6 @@ type Command struct {
 
 type Result struct {
 	Status   int    `json:"status"`
-	Data     int    `json:"data,omitempty"`
+	Data     int    `json:"data"`
 	ErrorMsg string `json:"error_msg,omitempty"`
 }

@@ -29,9 +29,12 @@ func TestHasNumberOutOfBounds(t *testing.T) {
 	}
 }
 
-func TestCommandAdd(t *testing.T) {
+func TestInvalidCommandsForAdd(t *testing.T) {
 	commands := []string{
 		"+",
+		"12 +",
+		"1 2 + +",
+		"1 2 + 4 + +",
 	}
 
 	for _, command := range commands {
@@ -39,6 +42,64 @@ func TestCommandAdd(t *testing.T) {
 
 		if err == nil {
 			t.Error("expected error for add operation")
+		}
+	}
+}
+
+func TestInvalidCommandsForDUP(t *testing.T) {
+	commands := []string{
+		"DUP",
+	}
+
+	for _, command := range commands {
+		_, err := StackMachine(command)
+
+		if err == nil {
+			t.Error("expected error for DUP operation")
+		}
+	}
+}
+
+func TestInvalidCommandsForPOP(t *testing.T) {
+	commands := []string{
+		"POP",
+	}
+
+	for _, command := range commands {
+		_, err := StackMachine(command)
+
+		if err == nil {
+			t.Error("expected error for POP operation")
+		}
+	}
+}
+
+func TestInvalidCommandsForMinus(t *testing.T) {
+	commands := []string{
+		"12 -",
+		"-",
+	}
+
+	for _, command := range commands {
+		_, err := StackMachine(command)
+
+		if err == nil {
+			t.Error("expected error for - operation")
+		}
+	}
+}
+
+func TestInvalidCommandsForMultiply(t *testing.T) {
+	commands := []string{
+		"12 *",
+		"*",
+	}
+
+	for _, command := range commands {
+		_, err := StackMachine(command)
+
+		if err == nil {
+			t.Error("expected error for * operation")
 		}
 	}
 }

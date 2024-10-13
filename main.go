@@ -47,7 +47,7 @@ func executeCommand(w http.ResponseWriter, r *http.Request) {
 	result, machineErr := StackMachine(command.Text)
 	if machineErr != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(Error{Status: http.StatusBadRequest, ErrorMsg: machineErr.Error()})
+		json.NewEncoder(w).Encode(Result{Status: http.StatusBadRequest, ErrorMsg: machineErr.Error()})
 		return
 	}
 

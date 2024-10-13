@@ -61,3 +61,32 @@ func TestExecuteHandler(t *testing.T) {
 		t.Errorf("handler returned unexpected body: got %v want %v", result.Data, expected)
 	}
 }
+
+func TestExecuteHandlerReturnsError(t *testing.T) {
+	//Arrange
+	requestBody, err := json.Marshal(Command{Text: ""})
+	req, err := http.NewRequest("POST", "/execute", bytes.NewBuffer(requestBody))
+	if err != nil {
+		t.Fatal(err)
+	}
+	req.Header.Add("Content-Type", "application/json")
+
+	testResponse := httptest.NewRecorder()
+	handler := http.HandlerFunc(executeCommand)
+
+	// Act
+	handler.ServeHTTP(testResponse, req)
+
+	//Assert
+	if status := testResponse.Code; status != http.StatusBadRequest {
+		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusBadRequest)
+	}
+
+	var result Result
+	json.NewDecoder(testResponse.Body).Decode(&result)
+
+	expected := "empty command"
+	if result.ErrorMsg != expected {
+		t.Errorf("handler returned unexpected body: got %v want %v", result.ErrorMsg, expected)
+	}
+}

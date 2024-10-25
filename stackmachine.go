@@ -24,7 +24,7 @@ func StackMachine(commands string) (int, error) {
 	}
 
 	for _, command := range commandSlice {
-		operation := CreateOperations(command, &machine)
+		operation := CreateOperation(command, &machine)
 		err := operation.Execute()
 
 		if err != nil {
@@ -40,8 +40,7 @@ func StackMachine(commands string) (int, error) {
 	return firstNumInStack, nil
 }
 
-func CreateOperations(command string, m *Machine) Operation {
-
+func CreateOperation(command string, m *Machine) Operation {
 	switch command {
 	case "POP":
 		return &PopOperation{machine: m}

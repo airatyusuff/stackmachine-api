@@ -39,7 +39,7 @@ func (m *Machine) processAddOperation() error {
 		return errors.New("stack integer add overflow")
 	}
 
-	m.processOperation(numTotal, 2)
+	m.processNumberOperationOnStack(numTotal, 2)
 	return nil
 }
 
@@ -51,7 +51,7 @@ func (m *Machine) processMinusOperation() error {
 		return errors.New("stack integer underflow")
 	}
 
-	m.processOperation(result, 2)
+	m.processNumberOperationOnStack(result, 2)
 	return nil
 }
 
@@ -63,7 +63,7 @@ func (m *Machine) processMultiplyOperation() error {
 		return errors.New("stack integer overflow")
 	}
 
-	m.processOperation(result, 2)
+	m.processNumberOperationOnStack(result, 2)
 	return nil
 }
 
@@ -78,7 +78,7 @@ func (m *Machine) processSUMOperation() error {
 	}
 
 	stackLength := len(m.stack)
-	m.processOperation(sumTotal, stackLength)
+	m.processNumberOperationOnStack(sumTotal, stackLength)
 	return nil
 }
 
@@ -98,7 +98,7 @@ func (m *Machine) removeElementsFromStack(numberOfElements int) {
 	m.stack = m.stack[:len(m.stack)-numberOfElements]
 }
 
-func (m *Machine) processOperation(resultToAppend int, numOfNumsToRemove int) {
+func (m *Machine) processNumberOperationOnStack(resultToAppend int, numOfNumsToRemove int) {
 	m.removeElementsFromStack(numOfNumsToRemove)
 	m.appendToStack(resultToAppend)
 }

@@ -4,6 +4,10 @@ import (
 	"errors"
 )
 
+func isNumberOutOfBounds(num int) bool {
+	return num < 0 || num > MAX_NUMBER_LIMIT
+}
+
 func (m *Machine) isStackEmpty() bool {
 	if len(m.stack) == 0 {
 		return true

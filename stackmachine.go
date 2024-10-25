@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"strconv"
 	"strings"
 )
 
@@ -25,7 +24,8 @@ func StackMachine(commands string) (int, error) {
 	}
 
 	for _, command := range commandSlice {
-		err := processCommand(command, &machine)
+		operation := CreateOperations(command, &machine)
+		err := operation.Execute()
 
 		if err != nil {
 			return 0, err
@@ -40,65 +40,31 @@ func StackMachine(commands string) (int, error) {
 	return firstNumInStack, nil
 }
 
-func processCommand(command string, m *Machine) error {
+func CreateOperations(command string, m *Machine) Operation {
+
 	switch command {
 	case "POP":
-		if m.notEnoughNumsInStack(MIN_ELEMENTS_FOR_SINGLE_OPS) {
-			return errors.New("not enough nums in stack for a POP")
-		}
-		m.processPOPOperation()
+		return &PopOperation{machine: m}
 
 	case "DUP":
-		if m.notEnoughNumsInStack(MIN_ELEMENTS_FOR_SINGLE_OPS) {
-			return errors.New("not enough nums in stack for a DUP")
-		}
-		m.processDUPOperation()
+		return &DupOperation{machine: m}
 
 	case "CLEAR":
-		stackLength := len(m.stack)
-		m.removeElementsFromStack(stackLength)
+		return &ClearOperation{machine: m}
 
 	case "SUM":
-		if m.isStackEmpty() {
-			return errors.New("cannot SUM on empty stack")
-		}
-		return m.processSUMOperation()
+		return &SumOperation{machine: m}
 
 	case "+":
-		if m.notEnoughNumsInStack(MIN_ELEMENTS_FOR_DOUBLE_OPS) {
-			return errors.New("not enough numbers in stack for add")
-		}
-		return m.processAddOperation()
+		return &AddOperation{machine: m}
 
 	case "-":
-		if m.notEnoughNumsInStack(MIN_ELEMENTS_FOR_DOUBLE_OPS) {
-			return errors.New("not enough numbers in stack for minus")
-		}
-		return m.processMinusOperation()
+		return &MinusOperation{machine: m}
 
 	case "*":
-		if m.notEnoughNumsInStack(MIN_ELEMENTS_FOR_DOUBLE_OPS) {
-			return errors.New("not enough numbers in stack for multiply")
-		}
-		return m.processMultiplyOperation()
+		return &MultiplyOperation{machine: m}
 
 	default:
-		num, err := strconv.Atoi(command)
-
-		if err != nil {
-			return errors.New("invalid command encountered: not a number and not included in list of allowed operations")
-		}
-
-		if isNumberOutOfBounds(num) {
-			return errors.New("number out of bounds")
-		}
-
-		m.appendToStack(num)
+		return &NumbersOperation{machine: m, args: command}
 	}
-
-	return nil
-}
-
-func isNumberOutOfBounds(num int) bool {
-	return num < 0 || num > MAX_NUMBER_LIMIT
 }
